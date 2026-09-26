@@ -1,0 +1,10 @@
+# PhpStorm / JetBrains local project settings
+/.idea/
+
+# IntelliJ module files
+*.iml
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
