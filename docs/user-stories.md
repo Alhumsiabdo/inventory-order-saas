@@ -21,12 +21,12 @@ so that employees can see it and sell it correctly.
 5. When the owner creates the product, it belongs only to the owner's business.
 
 6. When the opening stock is greater than zero, the system creates a stock-history record with:
-    - The product.
-    - The quantity added.
-    - The reason: `opening_stock`.
-    - The date and time.
-    - The owner who created the product.
+   - The product.
+   - The quantity added.
+   - The reason: `opening_stock`.
+   - The date and time.
+   - The owner who created the product.
 
 7. A user from another business cannot view, create, update, or delete this product.
 
-   8. After the product is created, authorized employees in the same business can view its current available stock.
+8. After the product is created, authorized employees in the same business can view its current available stock.
