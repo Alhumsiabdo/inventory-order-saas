@@ -65,3 +65,45 @@ so that the available stock stays accurate after new products arrive.
 7. A sales employee cannot record received stock.
 
 8. A user cannot receive stock for a product belonging to another business.
+
+## US-003: Create a Customer Order
+
+### User Story
+
+As a sales employee,  
+I want to create a customer order containing one or more products,  
+so that the shop can record a sale and reduce available stock correctly.
+
+### Acceptance Criteria
+
+1. Only an owner or sales employee can create an order.
+
+2. The user can add one or more products belonging to their own business
+   to an order.
+
+3. Each order item must have a quantity greater than zero.
+
+4. The system must use the product price stored on the server when creating
+   the order. The client must not decide the final price.
+
+5. Before confirming an order, the system checks that sufficient available
+   stock exists for every requested product.
+
+6. If the requested quantity is greater than the available stock for any
+   product, the system rejects the order and does not change any stock.
+
+7. When an order is confirmed, the system:
+   - Creates the order.
+   - Creates order items.
+   - Reduces available stock for every ordered product.
+   - Creates one stock-history record per ordered product.
+   - Sets the stock-history reason to `order_confirmed`.
+   - Records the employee who created the order.
+
+8. Creating the order, reducing stock, and creating stock-history records
+   must succeed or fail together. Partial changes are not allowed.
+
+9. A user cannot create an order with products belonging to another business.
+
+10. A sales employee can view orders they created, while the owner can view
+    all orders belonging to their own business.
