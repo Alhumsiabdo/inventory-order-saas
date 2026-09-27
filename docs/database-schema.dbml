@@ -64,23 +64,28 @@ Table products {
   id bigint [pk, increment]
   business_id bigint [not null, ref: > businesses.id]
   name varchar [not null]
-  selling_price decimal(12,2) [not null]
+  selling_price decimal(12,2) [not null, note: 'Must be greater than or equal to zero']
   status product_status [not null, default: 'active']
   created_at timestamp [not null]
   updated_at timestamp [not null]
 
   indexes {
-    (business_id, name)
+    (business_id, name) [unique]
+    (business_id, status)
   }
 }
 
 Table product_stocks {
   id bigint [pk, increment]
   business_id bigint [not null, ref: > businesses.id]
-  product_id bigint [not null, ref: > products.id, unique]
-  available_quantity integer [not null, default: 0]
+  product_id bigint [not null, unique, ref: > products.id]
+  available_quantity integer [not null, default: 0, note: 'Must be greater than or equal to zero']
   created_at timestamp [not null]
   updated_at timestamp [not null]
+
+  indexes {
+    (business_id, product_id)
+  }
 }
 
 Table customers {
@@ -91,6 +96,10 @@ Table customers {
   note text
   created_at timestamp [not null]
   updated_at timestamp [not null]
+
+  indexes {
+    (business_id, name)
+  }
 }
 
 Table orders {
@@ -99,27 +108,33 @@ Table orders {
   customer_id bigint [not null, ref: > customers.id]
   created_by_user_id bigint [not null, ref: > users.id]
   status order_status [not null, default: 'confirmed']
-  total_amount decimal(12,2) [not null]
+  total_amount decimal(12,2) [not null, note: 'Must be greater than or equal to zero']
   confirmed_at timestamp [not null]
   cancelled_at timestamp
   cancelled_by_user_id bigint [ref: > users.id]
   cancellation_reason text
   created_at timestamp [not null]
   updated_at timestamp [not null]
+
+  indexes {
+    (business_id, status, created_at)
+    (created_by_user_id, created_at)
+  }
 }
 
 Table order_items {
   id bigint [pk, increment]
   order_id bigint [not null, ref: > orders.id]
   product_id bigint [not null, ref: > products.id]
-  quantity integer [not null]
-  unit_price decimal(12,2) [not null]
-  line_total decimal(12,2) [not null]
+  quantity integer [not null, note: 'Must be greater than zero']
+  unit_price decimal(12,2) [not null, note: 'Must be greater than or equal to zero']
+  line_total decimal(12,2) [not null, note: 'Must be greater than or equal to zero']
   created_at timestamp [not null]
   updated_at timestamp [not null]
 
   indexes {
     (order_id, product_id) [unique]
+    (product_id)
   }
 }
 
@@ -129,8 +144,13 @@ Table stock_movements {
   product_id bigint [not null, ref: > products.id]
   order_id bigint [ref: > orders.id]
   created_by_user_id bigint [not null, ref: > users.id]
-  quantity_change integer [not null]
+  quantity_change integer [not null, note: 'Must not equal zero; positive adds stock and negative removes stock']
   reason stock_movement_reason [not null]
   note text
   created_at timestamp [not null]
+
+  indexes {
+    (business_id, product_id, created_at)
+    (order_id)
+  }
 }
