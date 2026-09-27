@@ -98,7 +98,7 @@ Table customers {
   updated_at timestamp [not null]
 
   indexes {
-    (business_id, name)
+    (business_id, name) [note: 'Unique for active products']
   }
 }
 
