@@ -107,3 +107,42 @@ so that the shop can record a sale and reduce available stock correctly.
 
 10. A sales employee can view orders they created, while the owner can view
     all orders belonging to their own business.
+
+## US-004: Cancel an Order
+
+### User Story
+
+As an owner or sales employee,  
+I want to cancel an order that was created by mistake or cannot be completed,  
+so that the sale is not counted and its stock is returned correctly.
+
+### Acceptance Criteria
+
+1. Only an owner can cancel any order belonging to their own business.
+
+2. A sales employee can cancel only an order they created and only before it
+   is completed.
+
+3. An order can be cancelled only when its current status is `confirmed`.
+
+4. Cancelling an order must not delete the order or its order items.
+   The system changes the order status to `cancelled`.
+
+5. When an order is cancelled, the system increases available stock by the
+   quantity of every item in that order.
+
+6. When an order is cancelled, the system creates one stock-history record
+   for each order item containing:
+   - The product.
+   - The positive quantity returned.
+   - The reason: `order_cancelled`.
+   - The related order.
+   - The date and time.
+   - The user who cancelled the order.
+
+7. Cancelling an order, returning stock, and creating stock-history records
+   must succeed or fail together. Partial changes are not allowed.
+
+8. A cancelled order cannot be cancelled again.
+
+9. A user cannot cancel an order belonging to another business.
