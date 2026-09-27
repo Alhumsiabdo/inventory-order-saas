@@ -1,0 +1,127 @@
+Enum membership_role {
+  owner
+  sales_employee
+  inventory_employee
+}
+
+Enum membership_status {
+  active
+  inactive
+}
+
+Enum product_status {
+  active
+  archived
+}
+
+Enum order_status {
+  confirmed
+  cancelled
+}
+
+Enum stock_movement_reason {
+  opening_stock
+  stock_received
+  order_confirmed
+  order_cancelled
+  damaged
+  missing
+  correction
+}
+
+Table businesses {
+  id bigint [pk, increment]
+  name varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table users {
+  id bigint [pk, increment]
+  name varchar [not null]
+  email varchar [not null, unique]
+  password varchar [not null]
+  status varchar [not null, default: 'active']
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table business_memberships {
+  id bigint [pk, increment]
+  business_id bigint [not null, ref: > businesses.id]
+  user_id bigint [not null, ref: > users.id]
+  role membership_role [not null]
+  status membership_status [not null, default: 'active']
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (business_id, user_id) [unique]
+  }
+}
+
+Table products {
+  id bigint [pk, increment]
+  business_id bigint [not null, ref: > businesses.id]
+  name varchar [not null]
+  selling_price decimal(12,2) [not null]
+  status product_status [not null, default: 'active']
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (business_id, name)
+  }
+}
+
+Table customers {
+  id bigint [pk, increment]
+  business_id bigint [not null, ref: > businesses.id]
+  name varchar [not null]
+  phone varchar
+  note text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table orders {
+  id bigint [pk, increment]
+  business_id bigint [not null, ref: > businesses.id]
+  customer_id bigint [not null, ref: > customers.id]
+  created_by_user_id bigint [not null, ref: > users.id]
+  status order_status [not null, default: 'confirmed']
+  total_amount decimal(12,2) [not null]
+  confirmed_at timestamp [not null]
+  cancelled_at timestamp
+  cancelled_by_user_id bigint [ref: > users.id]
+  cancellation_reason text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table order_items {
+  id bigint [pk, increment]
+  order_id bigint [not null, ref: > orders.id]
+  product_id bigint [not null, ref: > products.id]
+  quantity integer [not null]
+  unit_price decimal(12,2) [not null]
+  line_total decimal(12,2) [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (order_id, product_id) [unique]
+  }
+}
+
+Table stock_movements {
+  id bigint [pk, increment]
+  business_id bigint [not null, ref: > businesses.id]
+  product_id bigint [not null, ref: > products.id]
+  order_id bigint [ref: > orders.id]
+  created_by_user_id bigint [not null, ref: > users.id]
+  quantity_change integer [not null]
+  reason stock_movement_reason [not null]
+  note text
+  created_at timestamp [not null]
+}
