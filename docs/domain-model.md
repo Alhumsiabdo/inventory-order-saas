@@ -46,6 +46,22 @@ Examples of information:
 - Selling price.
 - Product status: active or archived.
 
+### Product Stock
+
+Represents the current available stock balance for one product in one business.
+
+Examples of information:
+- Business.
+- Product.
+- Available quantity.
+- Date and time of the latest update.
+
+Why it exists:
+
+It provides a fast current-stock value for product lists and order creation.
+The quantity must always be updated in the same database transaction as the
+related stock-movement record.
+
 ### Stock Movement
 
 Represents one event that changes the quantity of a product.
@@ -142,3 +158,9 @@ Examples of information:
 
 13. A Stock Movement can optionally belong to one Order.  
     An Order can have many Stock Movements.
+
+14. A Product has one Product Stock record.
+    A Product Stock belongs to one Product.
+
+15. A Business has many Product Stock records.
+    A Product Stock belongs to one Business.
